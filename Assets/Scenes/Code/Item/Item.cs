@@ -2,26 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ItemType
+public class Item : MonoBehaviour
 {
-    Equipment,
-    Consumables,
-    ETC
-
+   public enum Type {Tools, Fruit, Fish};
+   public Type type;
+   public int value;
+   public static float globalGravity = -9.8f;
+   public float gravityScale;
+   Rigidbody m_rb;
+private void Awake() 
+{
+  m_rb = GetComponent<Rigidbody>();
+  
 }
-
-
-
-[System.Serializable]
-public class Item 
+  private void FixedUpdate() 
 {
-    public ItemType itemType;
-    public string itemName;
-    public Sprite ItemImage;
-
-    public bool Use()
-    {
-       return false;
-    }
-
+   //Gravity
+   Vector3 gravity = globalGravity * gravityScale * Vector3.up;
+        m_rb.AddForce(gravity, ForceMode.Acceleration);
+  
+}
+void Update() 
+   {
+      
+   }
 }
