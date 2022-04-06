@@ -4,22 +4,28 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
- // About UI
- public SpeechManager manager;
-
 // About Game
  public float speed;
+ public GameObject[] Tools;
+ public bool[] hasTools;
+
  float hAxis;
  float vAxis;
+ 
  bool wDown;
  bool jDown;
  bool isJump;
+ bool isBorder;
+ bool iDown;
+ 
  Vector3 moveVec;
  Animator animator;
 
- public float gravityScale = 40.0f;
-    public static float globalGravity = -9.8f;
-    Rigidbody m_rb;
+ GameObject nearObject;
+
+ public float gravityScale;
+public static float globalGravity = -9.8f;
+  Rigidbody m_rb;
 private void OnEnable() 
 {
     m_rb = GetComponent<Rigidbody>();
@@ -40,15 +46,18 @@ private void FixedUpdate()
    //Gravity
    Vector3 gravity = globalGravity * gravityScale * Vector3.up;
         m_rb.AddForce(gravity, ForceMode.Acceleration);
+    
+    //Prevention of passage
+   
   
 }
-
 private void Update() 
  {
   GetInput();
   Move();
   Turn();
   Jump();
+  Interaction();
  }
  void GetInput()
  {
@@ -56,13 +65,14 @@ private void Update()
    vAxis = Input.GetAxisRaw("Vertical");
    wDown = Input.GetButton("Walk");
    jDown = Input.GetButtonDown("Jump");
+   iDown = Input.GetButtonDown("Interaction");
  }
 
  void Move()
  {
      moveVec = new Vector3(hAxis, 0, vAxis).normalized;
 
-     transform.position += moveVec * speed *(wDown ? 0.3f : 1f) * Time.deltaTime; 
+    transform.position += moveVec * speed *(wDown ? 0.3f : 1f) * Time.deltaTime; 
 
      animator.SetBool("isRun", moveVec != Vector3.zero);
      animator.SetBool("isWalk", wDown);
@@ -93,5 +103,38 @@ private void Update()
     }
     
   }
+
+ void OnTriggerEnterStay(Collider other) 
+{
+  if((other.gameObject.tag == "Fishing") && Input.GetKeyDown(KeyCode.F))
+  {
+    animator.SetTrigger("doFishing");
+  }
+}
+
+   private void OnTriggerStay(Collider other) 
+   {
+     if(other.tag == "Fishing")
+     nearObject = other.gameObject;
+
+     Debug.Log(nearObject.name);
+   }
+
+   private void OnTriggerExit(Collider other) 
+   {
+     nearObject = null;
+   }
+
+   void Interaction()
+   {
+     if(iDown && nearObject != null && !isJump)
+     {
+       if(nearObject.tag == "Tools")
+       {
+         
+       }
+
+     }
+   }
 }
 
