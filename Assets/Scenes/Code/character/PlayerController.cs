@@ -17,11 +17,20 @@ public class PlayerController : MonoBehaviour
  bool isJump;
  bool isBorder;
  bool iDown;
+ bool sDown1;
+ bool sDown2;
+ bool sDown3;
+ bool sDown4;
+ bool sDown5;
+
  
  Vector3 moveVec;
  Animator animator;
 
  GameObject nearObject;
+ GameObject equipTool;
+
+ int equpToolIndex = -1;
 
  public float gravityScale;
 public static float globalGravity = -9.8f;
@@ -58,6 +67,7 @@ private void Update()
   Turn();
   Jump();
   Interaction();
+  Swap();
  }
  void GetInput()
  {
@@ -66,6 +76,11 @@ private void Update()
    wDown = Input.GetButton("Walk");
    jDown = Input.GetButtonDown("Jump");
    iDown = Input.GetButtonDown("Interaction");
+   sDown1 = Input.GetButtonDown("Swap1");
+   sDown2 = Input.GetButtonDown("Swap2");
+   sDown3 = Input.GetButtonDown("Swap3");
+   sDown4 = Input.GetButtonDown("Swap4");
+   sDown5 = Input.GetButtonDown("Swap5");
  }
 
  void Move()
@@ -104,34 +119,58 @@ private void Update()
     
   }
 
- void OnTriggerEnterStay(Collider other) 
-{
-  if((other.gameObject.tag == "Fishing") && Input.GetKeyDown(KeyCode.F))
-  {
-    animator.SetTrigger("doFishing");
-  }
-}
-
-   private void OnTriggerStay(Collider other) 
+    void OnTriggerStay(Collider other)
    {
-     if(other.tag == "Fishing")
+     if (other.tag == "Tools")
      nearObject = other.gameObject;
-
-     Debug.Log(nearObject.name);
    }
-
-   private void OnTriggerExit(Collider other) 
+   void OnTriggerExit(Collider other) 
    {
+    if (other.tag == "Tools")
      nearObject = null;
    }
 
+   void Swap()
+   {
+     if(sDown1 && (!hasTools[0] || equpToolIndex == 0))
+     return;
+     if(sDown2 && (!hasTools[1] || equpToolIndex == 1))
+     return;
+     if(sDown3 && (!hasTools[2] || equpToolIndex == 2))
+     return;
+     if(sDown4 && (!hasTools[3] || equpToolIndex == 3))
+     return;
+     if(sDown5 && (!hasTools[4] || equpToolIndex == 4))
+     return;
+
+     int ToolIndex = -1;
+     if(sDown1) ToolIndex = 0;
+     if(sDown2) ToolIndex = 1;
+     if(sDown3) ToolIndex = 2;
+     if(sDown4) ToolIndex = 3;
+     if(sDown5) ToolIndex = 4;
+     
+     if((sDown1 || sDown2 || sDown3 || sDown4 || sDown5) && !isJump)
+     {
+       if(equipTool != null)
+          equipTool.SetActive(false);
+
+      equpToolIndex = ToolIndex;
+       equipTool = Tools[ToolIndex];
+       equipTool.SetActive(true);
+     }
+   }
    void Interaction()
    {
      if(iDown && nearObject != null && !isJump)
      {
        if(nearObject.tag == "Tools")
        {
-         
+         Item item = nearObject.GetComponent<Item>();
+         int ToolIndex = item.value;
+         hasTools[ToolIndex] = true;
+
+         Destroy(nearObject);
        }
 
      }
