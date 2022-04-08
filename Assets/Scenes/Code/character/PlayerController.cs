@@ -6,8 +6,22 @@ public class PlayerController : MonoBehaviour
 {
 // About Game
  public float speed;
+ 
+ //Tools
  public GameObject[] Tools;
  public bool[] hasTools;
+
+ //Status
+ public int fish;
+ public int coin;
+ public int fruit;
+ public int SP;
+
+ //Max Status
+ public int Maxfish;
+ public int Maxcoin;
+ public int Maxfruit;
+ public int MaxSP;
 
  float hAxis;
  float vAxis;
@@ -22,6 +36,7 @@ public class PlayerController : MonoBehaviour
  bool sDown3;
  bool sDown4;
  bool sDown5;
+ bool isFishing;
 
  
  Vector3 moveVec;
@@ -55,10 +70,6 @@ private void FixedUpdate()
    //Gravity
    Vector3 gravity = globalGravity * gravityScale * Vector3.up;
         m_rb.AddForce(gravity, ForceMode.Acceleration);
-    
-    //Prevention of passage
-   
-  
 }
 private void Update() 
  {
@@ -118,11 +129,29 @@ private void Update()
     }
     
   }
+  void OnTriggerEnter(Collider other) 
+  {
+    if(other.tag == "Tools")
+    {
+      Item item = other.GetComponent<Item>();
+      switch (item.type)
+      {
+        case Item.Type.Tools :
+          break;
+        case Item.Type.Fruit :
+          break;
+        case Item.Type.Fish :
+          break;
 
-    void OnTriggerStay(Collider other)
+      }
+    }
+  }
+  void OnTriggerStay(Collider other)
    {
      if (other.tag == "Tools")
      nearObject = other.gameObject;
+     if (other.tag == "Fishing")
+     nearObject = other.gameObject;     
    }
    void OnTriggerExit(Collider other) 
    {
@@ -172,8 +201,19 @@ private void Update()
 
          Destroy(nearObject);
        }
+       if(nearObject.tag == "Fishing")
+       {
+          if(iDown && !isFishing)
+          {
+            animator.SetTrigger("doFishing");
+            animator.SetBool("isFishing", true);
+            
+            isFishing = false;
 
-     }
+          }
+        }
+      }
    }
 }
+
 
