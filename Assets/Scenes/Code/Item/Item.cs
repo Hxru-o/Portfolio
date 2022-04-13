@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-   public enum Type {Tools, Fruit, Fish};
+   public enum Type {Tools, Fruit, Fish,coin};
    public Type type;
    public int value;
    public static float globalGravity = -9.8f;
