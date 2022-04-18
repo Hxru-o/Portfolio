@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -17,6 +18,9 @@ public class PlayerController : MonoBehaviour
  public int fruit;
  public int SP;
 
+bool Fishingrod;
+bool Axe;
+bool pickax;
  //Max Status
  public int Maxfish;
  public int Maxcoin;
@@ -37,7 +41,18 @@ public class PlayerController : MonoBehaviour
  bool sDown4;
  bool sDown5;
  bool isFishing;
+ bool isRun;
+ bool isTree;
 
+ bool isMining;
+ bool doMining;
+
+[SerializeField]
+private Text interactionText;
+[SerializeField]
+private GameObject rock_prefab;
+[SerializeField]
+private GameObject fish_prefab;
  
  Vector3 moveVec;
  Animator animator;
@@ -45,6 +60,13 @@ public class PlayerController : MonoBehaviour
  GameObject nearObject;
  GameObject equipTool;
 
+[SerializeField]
+ private int DropItemcount;
+
+ [SerializeField]
+ private Inventory theInventory;
+[SerializeField]
+private GameObject apple_prefab;
  int equpToolIndex = -1;
 
  public float gravityScale;
@@ -94,6 +116,7 @@ private void Update()
    sDown5 = Input.GetButtonDown("Swap5");
  }
 
+
  void Move()
  {
      moveVec = new Vector3(hAxis, 0, vAxis).normalized;
@@ -127,23 +150,15 @@ private void Update()
     {
       isJump = false;
     }
+ }
+
     
-  }
+  
   void OnTriggerEnter(Collider other) 
   {
     if(other.tag == "Tools")
     {
       Item item = other.GetComponent<Item>();
-      switch (item.type)
-      {
-        case Item.Type.Tools :
-          break;
-        case Item.Type.Fruit :
-          break;
-        case Item.Type.Fish :
-          break;
-
-      }
     }
   }
   void OnTriggerStay(Collider other)
@@ -151,12 +166,31 @@ private void Update()
      if (other.tag == "Tools")
      nearObject = other.gameObject;
      if (other.tag == "Fishing")
-     nearObject = other.gameObject;     
+     nearObject = other.gameObject;
+     if (other.tag == "Shop")
+     nearObject = other.gameObject;
+     if (other.tag == "Rock")
+     nearObject = other.gameObject;
+     if (other.tag == "DropItem")
+     nearObject = other.gameObject;
+     if (other.tag == "Tree")
+     nearObject = other.gameObject;
    }
-   void OnTriggerExit(Collider other) 
+   public void OnTriggerExit(Collider other) 
    {
     if (other.tag == "Tools")
      nearObject = null;
+    if (other.tag == "Fishing")
+     nearObject = null;
+    if (other.tag == "Shop")
+      nearObject = null;
+    if (other.tag == "Rock")
+    nearObject = null;
+    if (other.tag == "DropItem")
+    nearObject = null;
+    if (other.tag == "Tree")
+    nearObject = null;
+
    }
 
    void Swap()
@@ -201,19 +235,70 @@ private void Update()
 
          Destroy(nearObject);
        }
+       else if(nearObject.tag == "Shop")
+       {
+         Store store = nearObject.GetComponent<Store>();
+         store.Enter(this);
+       }
        if(nearObject.tag == "Fishing")
        {
-          if(iDown && !isFishing)
-          {
+          if(iDown && equpToolIndex == 0)
+          { 
             animator.SetTrigger("doFishing");
             animator.SetBool("isFishing", true);
-            
-            isFishing = false;
-
+            Invoke("Fish",6f);
+            Destroy(nearObject);
+          }
+          
+        }
+        if(nearObject.tag == "Rock")
+        {
+          if(iDown && equpToolIndex == 2)
+          {
+          animator.SetTrigger("doMining");
+          animator.SetBool("isMining", true);
+          isMining = false;
+          Invoke("Rock",1.5f);
+          Destroy(nearObject);
           }
         }
+        if(nearObject.tag == "DropItem")
+        {
+          Debug.Log ("획득하였습니다");
+          theInventory.Acquireitem(nearObject.GetComponent<ItemPickup>().item);
+          Destroy(nearObject);
+        }
+        if(nearObject.tag == "Tree")
+        {
+          if(iDown && equpToolIndex == 1)
+          {
+            animator.SetTrigger("doTree");
+            animator.SetBool("isTree",true);
+            isTree = false;
+            Invoke("Tree",1.5f);
+            Destroy(nearObject);
+          }
+        } 
       }
-   }
+    }
+         void Fish()
+        {
+          for(int i = 0; i <= DropItemcount; i++)
+            {Instantiate (fish_prefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);}
+        }
+        void Rock()
+        {
+          for(int i = 0; i <= DropItemcount; i++)
+        {Instantiate (rock_prefab, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);}
+        }
+        void Tree()
+        {
+          for(int i = 0; i <= DropItemcount; i++)
+          {Instantiate (apple_prefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);}
+        }        
 }
+
+
+
 
 
