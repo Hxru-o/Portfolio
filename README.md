@@ -10,7 +10,7 @@ About Life Contents in RPG
 
 ### 3.NPC Text
 
-![3](https://user-images.githubusercontent.com/102019445/165065886-11638616-4466-40d7-accf-d47decefb7b7.PNG
+![3](https://user-images.githubusercontent.com/102019445/165065886-11638616-4466-40d7-accf-d47decefb7b7.PNG)
 
 ### 4.Shop
 
