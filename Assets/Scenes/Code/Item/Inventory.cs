@@ -5,7 +5,7 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
    public Transform rootSlot;
-   public Store store;
+  
 
    private List<StoreSlot> Storeslots;
    public GameObject inventoryPanel;
@@ -32,7 +32,7 @@ void Start()
 
       Storeslots.Add(slot);
   }
-  store.onSlotClick += BuyItem;     
+    
 }
 
 private void Update() 

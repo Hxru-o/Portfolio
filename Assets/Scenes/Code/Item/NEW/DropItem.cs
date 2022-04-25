@@ -14,9 +14,9 @@ public class DropItem : ScriptableObject
 
     public enum ItemType
     {
-        Tool,
-        Drop,
-        ETC
+        Apple,
+        Rock,
+        Fish
     }
    
 }

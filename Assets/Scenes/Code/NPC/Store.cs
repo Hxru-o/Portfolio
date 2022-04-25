@@ -7,19 +7,21 @@ public class Store : MonoBehaviour
     
     public Transform slotRoot;
     public ItemBuffer itemBuffer;
-    private List<Slot> slots;
+    PlayerController enterPlayer;
+    public RectTransform storeui;
+    private List<StoreSlot> slots;
 
     public System.Action<ItemProperty> onSlotClick;
 
     void Start()
     {
-        slots = new List<Slot>();
+        slots = new List<StoreSlot>();
         int SlotCount = slotRoot.childCount;
         
 
         for (int i = 0; i< SlotCount; i++)
         {
-            var slot = slotRoot.GetChild(i).GetComponent<Slot>();
+            var slot = slotRoot.GetChild(i).GetComponent<StoreSlot>();
 
             if(i < itemBuffer.items.Count)
             {
@@ -37,12 +39,24 @@ public class Store : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         
     }
-    public void OnclickSlot(Slot slot)
+
+    public void Enter(PlayerController player)
+    {
+        enterPlayer = player;
+        storeui.anchoredPosition = Vector3.zero;
+
+    }
+
+    void Exit()
+    { 
+    storeui.anchoredPosition = Vector3.down * 1000;
+
+    }
+    public void OnclickSlot(StoreSlot slot)
     {
          if(onSlotClick != null)
          {

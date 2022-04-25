@@ -4,15 +4,7 @@ using UnityEngine;
 
 public class Tools : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+     public enum Type {Fishingrod, Axe, Pickax};
+     public Type type;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

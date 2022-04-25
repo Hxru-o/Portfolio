@@ -12,36 +12,20 @@ public class PlayerController : MonoBehaviour
  public GameObject[] Tools;
  public bool[] hasTools;
 
- //Status
- public int fish;
  public int coin;
- public int fruit;
- public int SP;
-
-bool Fishingrod;
-bool Axe;
-bool pickax;
- //Max Status
- public int Maxfish;
- public int Maxcoin;
- public int Maxfruit;
- public int MaxSP;
-
  float hAxis;
  float vAxis;
  
  bool wDown;
  bool jDown;
  bool isJump;
- bool isBorder;
+
  bool iDown;
  bool sDown1;
  bool sDown2;
  bool sDown3;
  bool sDown4;
  bool sDown5;
- bool isFishing;
- bool isRun;
  bool isTree;
 
  bool isMining;
@@ -53,6 +37,9 @@ private Text interactionText;
 private GameObject rock_prefab;
 [SerializeField]
 private GameObject fish_prefab;
+
+[SerializeField]
+private GameObject Gold_prefab;
  
  Vector3 moveVec;
  Animator animator;
@@ -175,6 +162,12 @@ private void Update()
      nearObject = other.gameObject;
      if (other.tag == "Tree")
      nearObject = other.gameObject;
+     if (other.tag == "Shop")
+     nearObject = other.gameObject;
+     if (other.tag == "Item")
+     nearObject = other.gameObject;
+
+
    }
    public void OnTriggerExit(Collider other) 
    {
@@ -189,6 +182,14 @@ private void Update()
     if (other.tag == "DropItem")
     nearObject = null;
     if (other.tag == "Tree")
+    nearObject = null;
+    if (other.tag == "Shop")
+    {
+      Shop shop = nearObject.GetComponent<Shop>();
+      shop.Exit();
+      nearObject = null;
+    }  
+    if (other.tag == "Item")
     nearObject = null;
 
    }
@@ -237,9 +238,10 @@ private void Update()
        }
        else if(nearObject.tag == "Shop")
        {
-         Store store = nearObject.GetComponent<Store>();
-         store.Enter(this);
+         Shop shop = nearObject.GetComponent<Shop>();
+         shop.Enter(this);
        }
+       
        if(nearObject.tag == "Fishing")
        {
           if(iDown && equpToolIndex == 0)
@@ -279,23 +281,44 @@ private void Update()
             Destroy(nearObject);
           }
         } 
+      if(nearObject.tag ==  "Item")
+      {
+        if(iDown)
+        {
+          coin = (200+coin);
+          Destroy(nearObject);
+        }
       }
+      }
+
     }
          void Fish()
         {
           for(int i = 0; i <= DropItemcount; i++)
-            {Instantiate (fish_prefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);}
+            {
+              Instantiate (fish_prefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
+              Instantiate (Gold_prefab, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
+            }
         }
         void Rock()
         {
           for(int i = 0; i <= DropItemcount; i++)
-        {Instantiate (rock_prefab, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);}
+        {
+          Instantiate (rock_prefab, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
+          Instantiate (Gold_prefab, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
+        }
         }
         void Tree()
         {
           for(int i = 0; i <= DropItemcount; i++)
-          {Instantiate (apple_prefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);}
-        }        
+          {
+            Instantiate (apple_prefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
+            Instantiate (Gold_prefab, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
+          }
+        }    
+
+        
+
 }
 
 
